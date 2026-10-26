@@ -2,6 +2,7 @@
 **4.096 TFLOPS FP16 Compute Tile, 32-Bank Conflict-Free TCDM SRAM & 5-Port VC Router**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Academic Paper](https://img.shields.io/badge/Research_Paper-Read_PAPER.md-blueviolet.svg)](PAPER.md)
 [![Compute](https://img.shields.io/badge/Compute_Density-4.096_TFLOPS_FP16-brightgreen.svg)]()
 [![Memory](https://img.shields.io/badge/L1_TCDM_BW-256_GB%2Fs-blue.svg)]()
 [![NoC](https://img.shields.io/badge/NoC_Router-5--Port_Dual--VC_Wormhole-orange.svg)]()
