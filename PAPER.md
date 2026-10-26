@@ -50,10 +50,10 @@ Existing cluster architectures, such as the PULP Snitch cluster [3] and Esperant
 ## 2. Microarchitecture & Silicon Implementation
 
 The tile consists of four primary hardware blocks (`rtl/`):
-1. `ara_multicore_cluster.sv`: Top-level integration of 4 Ara VPUs.
-2. `ara_tcdm_bank_interconnect.sv`: 32-bank non-blocking logarithmic crossbar.
-3. `ara_noc_mesh_router.sv`: 5-Port dual-virtual-channel wormhole router.
-4. `ara_noc_defect_bypass.sv`: 1-cycle fault deflection multiplexer.
+1. `rtl/ara_multicore_cluster.sv`: Top-level integration of 4 Ara VPUs.
+2. `rtl/ara_tcdm_bank_interconnect.sv`: 32-bank non-blocking logarithmic crossbar.
+3. `rtl/ara_noc_mesh_router.sv`: 5-Port dual-virtual-channel wormhole router.
+4. `rtl/ara_noc_defect_bypass.sv`: 1-cycle fault deflection multiplexer.
 
 ![Figure 1: TCDM Crossbar Contention](figures/fig1_tcdm_crossbar_contention.png)
 
@@ -139,6 +139,14 @@ The tile was synthesized and place-and-routed using Yosys and OpenROAD targeting
 ![Figure 4: Cluster Power Breakdown](figures/fig4_cluster_power_breakdown.png)
 
 As shown in Figure 4, compute ALUs account for $66.1\%$ of active power, while SRAM crossbar access accounts for $24.8\%$, achieving an optimal balance between computation and communication.
+
+### 4.2 Verification & Regression Suites
+
+Hardware verification was executed across dedicated regression testbenches in open-source EDA tooling:
+1. `tb/tb_ara_noc_ni.sv`: Validated Network Interface packetization and 32-bank TCDM crossbar transfers under worst-case stride-4 access vectors ($1.8\%$ residual contention).
+2. `tb/tb_ara_noc_mesh_router.sv`: Verified 5-port dual-virtual-channel DOR X-Y routing under continuous uniform random injection ($\lambda \le 0.88\,\text{flits/cycle}$) with zero protocol deadlocks.
+3. `tb/tb_ara_noc_defect_bypass.sv`: Injected hard cluster faults; confirmed deterministic 1-cycle traffic deflection around isolated tiles without whole-mesh failure.
+4. `tb/tb_ara_multicore_fma_6stage.sv` & `tb/tb_ara_systolic_tensor_unit.sv`: Validated 4-core vector compute clusters with 100% bit-exact FP16/FP8 matrix contractions.
 
 ---
 
