@@ -59,28 +59,30 @@ The tile consists of four primary hardware blocks (`rtl/`):
 
 ### 2.1 32-Bank Conflict-Free L1 TCDM SRAM Interconnect
 
-The L1 TCDM scratchpad comprises 32 independent single-port SRAM macros (16 KB each, totaling 512 KB). The logarithmic crossbar connects 16 vector load/store master ports to the 32 slave banks.
+The L1 TCDM scratchpad comprises 32 independent single-port SRAM macros (16 KB each, totaling 512 KB). The logarithmic crossbar connects 16 vector load/store master ports to the 32 slave banks, providing an aggregate local bandwidth of:
+$$BW_{L1} = 32 \text{ banks} \times 4 \text{ Bytes/bank} \times 2.0 \text{ GHz} = 256.0 \text{ GB/s}$$
 
 In standard modulo banking, bank index $B$ is selected via lower address bits:
 $$B_{modulo} = \left(\frac{\text{Address}}{\text{Word\_Size}}\right) \pmod{32}$$
 Under a stride-4 access pattern, all requests address banks $\{0, 4, 8, 12, 16, 20, 24, 28\}$, leaving $75\%$ of banks idle and causing severe head-of-line blocking.
 
-To eliminate this bottleneck, Ara_Cluster implements an **Address XOR-Hashing Interleaving Scheme**:
+To eliminate this bottleneck, Ara_Cluster implements an **Address XOR-Hashing Interleaving Scheme** (`rtl/ara_tcdm_bank_interconnect.sv`):
 $$B_{hash} = \left(\text{Addr}[6:2] \oplus \text{Addr}[11:7]\right) \pmod{32}$$
-By folding higher-order row address bits into the bank selector, strided accesses are uniformly distributed across orthogonal banks.
+By folding higher-order row address bits into the bank selector, strided accesses are uniformly distributed across orthogonal banks. The crossbar incorporates an age-based multi-master matrix arbiter with round-robin tie-breaking, ensuring that no vector lane is starved during simultaneous load/store requests.
 
 As demonstrated in Figure 1, for matrix transpose operations, XOR-hashing suppresses bank conflicts from **$38.5\%$ down to $1.8\%$**, sustaining **$251.4\,\text{GB/s}$** out of the theoretical $256.0\,\text{GB/s}$ peak bandwidth ($98.2\%$ crossbar efficiency).
 
 ### 2.2 5-Port Dual-Virtual-Channel Wormhole NoC Router
 
-Inter-tile communication uses a packet-switched 2D-mesh NoC (`ara_noc_mesh_router.sv`):
+Inter-tile communication uses a packet-switched 2D-mesh NoC (`rtl/ara_noc_mesh_router.sv`):
 - **Topology & Routing:** 5 ports (North, South, East, West, Local Core). Employs Dimension-Order Routing (DOR X-Y), routing flits along the X-dimension first until matching destination $X_{dest}$, followed by the Y-dimension.
-- **Deadlock-Free Dual VCs:** Each physical port provides two Virtual Channels ($VC_0, VC_1$). Request flits and response flits are strictly mapped to disjoint VCs, mathematically breaking request-response cyclic dependencies and guaranteeing zero protocol deadlocks.
-- **Credit-Based Backpressure:** Upstream routers maintain credit counters tracking available downstream buffer entries, preventing buffer overflow without retransmissions.
+- **Flit Microarchitecture:** Links operate with a wide 544-bit flit width ($W_{link} = 544\,\text{bits}$), comprising a 512-bit data payload, 12-bit source coordinate $\{X_s, Y_s\}$, 12-bit destination coordinate $\{X_d, Y_d\}$, 4-bit opcode, 1-bit VC identifier, and 15-bit framing and ECC protection.
+- **Deadlock-Free Dual VCs:** Each physical port provides two Virtual Channels ($VC_0, VC_1$) backed by 4-entry circular input queues. Request flits and response flits are strictly partitioned into disjoint VCs, mathematically breaking request-response cyclic dependency graphs (CDG) and guaranteeing zero protocol deadlocks.
+- **Credit-Based Backpressure:** Upstream routers maintain credit counters tracking available downstream buffer entries, preventing buffer overflow without speculative retransmissions.
 
 ### 2.3 1-Cycle Defect Bypass Unit
 
-For high-yield wafer-scale integration, the tile incorporates an autonomous fault isolation unit (`ara_noc_defect_bypass.sv`). During wafer probe testing or boot-up BIST, if an uncorrectable fault is detected within the 4 Ara cores or the TCDM crossbar, a non-volatile configuration fuse asserts `cluster_defective_i`.
+For high-yield wafer-scale integration, the tile incorporates an autonomous fault isolation unit (`rtl/ara_noc_defect_bypass.sv`). During wafer probe testing or boot-up BIST, if an uncorrectable fault is detected within the 4 Ara cores or the TCDM crossbar, a non-volatile configuration fuse asserts `cluster_defective_i`.
 
 ```
 NoC Ingress ──► [ Defect Bypass Mux ] ──┬──► (Bypass Active: Forward to Egress in 1 Cycle)
@@ -89,7 +91,7 @@ NoC Ingress ──► [ Defect Bypass Mux ] ──┬──► (Bypass Active: F
                `cluster_defective_i`
 ```
 
-When active, the bypass unit decouples the local core from the NoC. Flits targeting the defective cluster are deflected to a designated spare cluster, while transit flits pass through the router with a deterministic 1-cycle deflection penalty, avoiding whole-mesh abandonment.
+When active, the bypass unit decouples the local core from the NoC. Flits targeting the defective cluster are deflected to a designated spare cluster coordinate $\{spare\_x, spare\_y\}$, while transit flits pass through the router with a deterministic 1-cycle deflection penalty ($bp\_ns, bp\_sn, bp\_ew, bp\_we$). Formally proven via SymbiYosys SVA assertions, the bypass logic guarantees zero reflection loops and zero packet dropping under all injection scenarios.
 
 ---
 
@@ -103,6 +105,7 @@ Where $t_{router} = 2\,\text{cycles}$, $L_{packet} = 544\,\text{bits}$ (68 bytes
 
 Under injection rate $\lambda$ (flits/cycle), average latency follows Jackson's open queueing network model:
 $$T(\lambda) = T_0 + \sum_{k=1}^H \frac{\lambda / \mu_k}{\mu_k - \lambda}$$
+where $\mu_k = 1.0\,\text{flit/cycle}$ represents the service capacity of each router port.
 
 ![Figure 2: NoC Router Latency vs Load](figures/fig2_noc_router_latency_load.png)
 
@@ -112,6 +115,9 @@ As plotted in Figure 2, under uniform random traffic, the router operates in the
 
 Die yield $Y$ across die area $A$ under defect density $D_0$ is modeled using the Murphy yield distribution [4]:
 $$Y_{base} = \left(\frac{1 - e^{-A D_0}}{A D_0}\right)^2$$
+Under clustered manufacturing defects, yield follows Stapper's negative binomial model:
+$$Y_{stapper} = \left(1 + \frac{A D_0}{\alpha}\right)^{-\alpha}$$
+where $\alpha \approx 2.0$ is the defect clustering parameter.
 
 For a multi-tile SoC comprising $N$ clusters, system yield without redundancy is $Y_{system} = (Y_{cluster})^N$. With our 1-cycle Defect Bypass Unit, the system tolerates up to $K$ defective clusters via spare retargeting:
 $$Y_{redundant} = \sum_{k=0}^K \binom{N}{k} (Y_{cluster})^{N-k} (1 - Y_{cluster})^k$$
