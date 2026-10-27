@@ -1,0 +1,16 @@
+[options]
+mode bmc
+depth 5
+
+[engines]
+smtbmc z3
+
+[script]
+read -formal ara_tcdm_bank_interconnect.sv
+chparam -set BANK_WORDS 2 ara_tcdm_bank_interconnect
+prep -top ara_tcdm_bank_interconnect
+memory_map
+opt -fast
+
+[files]
+rtl/ara_tcdm_bank_interconnect.sv

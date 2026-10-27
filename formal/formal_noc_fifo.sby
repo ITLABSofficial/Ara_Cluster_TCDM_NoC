@@ -1,0 +1,13 @@
+[options]
+mode prove
+depth 10
+
+[engines]
+smtbmc z3
+
+[script]
+read -formal ara_noc_fifo.sv
+prep -top ara_noc_fifo
+
+[files]
+rtl/ara_noc_fifo.sv

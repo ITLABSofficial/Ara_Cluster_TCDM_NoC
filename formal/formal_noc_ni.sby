@@ -1,0 +1,15 @@
+[options]
+mode bmc
+depth 6
+
+[engines]
+smtbmc z3
+
+[script]
+read -formal ara_noc_fifo.sv
+read -formal ara_noc_ni.sv
+prep -top ara_noc_ni
+
+[files]
+rtl/ara_noc_fifo.sv
+rtl/ara_noc_ni.sv

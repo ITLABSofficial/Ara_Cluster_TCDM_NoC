@@ -1,0 +1,33 @@
+SBY 19:40:01 [formal/formal_noc_ni] Removing directory '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_ni'.
+SBY 19:40:01 [formal/formal_noc_ni] Copy '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/rtl/ara_noc_fifo.sv' to '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_ni/src/ara_noc_fifo.sv'.
+SBY 19:40:01 [formal/formal_noc_ni] Copy '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/rtl/ara_noc_ni.sv' to '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_ni/src/ara_noc_ni.sv'.
+SBY 19:40:01 [formal/formal_noc_ni] engine_0: smtbmc z3
+SBY 19:40:01 [formal/formal_noc_ni] base: starting process "cd formal/formal_noc_ni/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 19:40:01 [formal/formal_noc_ni] base: Warning: Replacing memory \mem with list of registers. See ara_noc_fifo.sv:55
+SBY 19:40:01 [formal/formal_noc_ni] base: finished (returncode=0)
+SBY 19:40:01 [formal/formal_noc_ni] prep: starting process "cd formal/formal_noc_ni/model; yosys -ql design_prep.log design_prep.ys"
+SBY 19:40:01 [formal/formal_noc_ni] prep: finished (returncode=0)
+SBY 19:40:01 [formal/formal_noc_ni] smt2: starting process "cd formal/formal_noc_ni/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 19:40:01 [formal/formal_noc_ni] smt2: finished (returncode=0)
+SBY 19:40:01 [formal/formal_noc_ni] engine_0: starting process "cd formal/formal_noc_ni; yosys-smtbmc -s z3 --presat --noprogress -t 6  --append 0 --dump-vcd engine_0/trace.vcd --dump-yw engine_0/trace.yw --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2"
+SBY 19:40:01 [formal/formal_noc_ni] engine_0: ##   0:00:00  Solver: z3
+SBY 19:40:01 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 0..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 0..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 1..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 1..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 2..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 2..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 3..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 3..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 4..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 4..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assumptions in step 5..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Checking assertions in step 5..
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: ##   0:00:00  Status: passed
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: finished (returncode=0)
+SBY 19:40:02 [formal/formal_noc_ni] engine_0: Status returned by engine: pass
+SBY 19:40:02 [formal/formal_noc_ni] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:01 (1)
+SBY 19:40:02 [formal/formal_noc_ni] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:01 (1)
+SBY 19:40:02 [formal/formal_noc_ni] summary: engine_0 (smtbmc z3) returned pass
+SBY 19:40:02 [formal/formal_noc_ni] summary: engine_0 did not produce any traces
+SBY 19:40:02 [formal/formal_noc_ni] DONE (PASS, rc=0)

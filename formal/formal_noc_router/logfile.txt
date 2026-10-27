@@ -1,0 +1,54 @@
+SBY 19:26:57 [formal/formal_noc_router] Removing directory '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_router'.
+SBY 19:26:57 [formal/formal_noc_router] Copy '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/rtl/ara_noc_fifo.sv' to '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_router/src/ara_noc_fifo.sv'.
+SBY 19:26:57 [formal/formal_noc_router] Copy '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/rtl/ara_noc_mesh_router.sv' to '/run/media/it/WD_HDD/Sierra hmb bellekler/show/Ara_MultiCore_WSE_HBM3/formal/formal_noc_router/src/ara_noc_mesh_router.sv'.
+SBY 19:26:57 [formal/formal_noc_router] engine_0: smtbmc z3
+SBY 19:26:57 [formal/formal_noc_router] base: starting process "cd formal/formal_noc_router/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \hol_pop with list of registers. See ara_noc_mesh_router.sv:279
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \rr_ptr_q with list of registers. See ara_noc_mesh_router.sv:240
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \out_lock_vc_q with list of registers. See ara_noc_mesh_router.sv:239
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \out_lock_port_q with list of registers. See ara_noc_mesh_router.sv:238
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \xbar_valid with list of registers. See ara_noc_mesh_router.sv:230
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \xbar_flit with list of registers. See ara_noc_mesh_router.sv:229
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \grant_valid with list of registers. See ara_noc_mesh_router.sv:227
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \grant_vc with list of registers. See ara_noc_mesh_router.sv:226
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \grant_port with list of registers. See ara_noc_mesh_router.sv:225
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \hol_target_port with list of registers. See ara_noc_mesh_router.sv:106
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \mem with list of registers. See ara_noc_fifo.sv:55
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \xbar_ready with list of registers. See ara_noc_mesh_router.sv:301
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \hol_valid with list of registers. See ara_noc_mesh_router.sv:85
+SBY 19:26:57 [formal/formal_noc_router] base: Warning: Replacing memory \hol_flit with list of registers. See ara_noc_mesh_router.sv:84
+SBY 19:26:58 [formal/formal_noc_router] base: finished (returncode=0)
+SBY 19:26:58 [formal/formal_noc_router] prep: starting process "cd formal/formal_noc_router/model; yosys -ql design_prep.log design_prep.ys"
+SBY 19:26:58 [formal/formal_noc_router] prep: finished (returncode=0)
+SBY 19:26:58 [formal/formal_noc_router] smt2: starting process "cd formal/formal_noc_router/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 19:26:58 [formal/formal_noc_router] smt2: finished (returncode=0)
+SBY 19:26:58 [formal/formal_noc_router] engine_0: starting process "cd formal/formal_noc_router; yosys-smtbmc -s z3 --presat --noprogress -t 10  --append 0 --dump-vcd engine_0/trace.vcd --dump-yw engine_0/trace.yw --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2"
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Solver: z3
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assumptions in step 0..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assertions in step 0..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assumptions in step 1..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assertions in step 1..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assumptions in step 2..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assertions in step 2..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assumptions in step 3..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assertions in step 3..
+SBY 19:26:59 [formal/formal_noc_router] engine_0: ##   0:00:00  Checking assumptions in step 4..
+SBY 19:27:00 [formal/formal_noc_router] engine_0: ##   0:00:01  Checking assertions in step 4..
+SBY 19:27:01 [formal/formal_noc_router] engine_0: ##   0:00:02  Checking assumptions in step 5..
+SBY 19:27:04 [formal/formal_noc_router] engine_0: ##   0:00:05  Checking assertions in step 5..
+SBY 19:27:07 [formal/formal_noc_router] engine_0: ##   0:00:08  Checking assumptions in step 6..
+SBY 19:27:10 [formal/formal_noc_router] engine_0: ##   0:00:11  Checking assertions in step 6..
+SBY 19:27:15 [formal/formal_noc_router] engine_0: ##   0:00:16  Checking assumptions in step 7..
+SBY 19:27:24 [formal/formal_noc_router] engine_0: ##   0:00:25  Checking assertions in step 7..
+SBY 19:27:32 [formal/formal_noc_router] engine_0: ##   0:00:33  Checking assumptions in step 8..
+SBY 19:27:45 [formal/formal_noc_router] engine_0: ##   0:00:46  Checking assertions in step 8..
+SBY 19:28:07 [formal/formal_noc_router] engine_0: ##   0:01:08  Checking assumptions in step 9..
+SBY 19:28:42 [formal/formal_noc_router] engine_0: ##   0:01:43  Checking assertions in step 9..
+SBY 19:28:50 [formal/formal_noc_router] engine_0: ##   0:01:51  Status: passed
+SBY 19:28:50 [formal/formal_noc_router] engine_0: finished (returncode=0)
+SBY 19:28:50 [formal/formal_noc_router] engine_0: Status returned by engine: pass
+SBY 19:28:50 [formal/formal_noc_router] summary: Elapsed clock time [H:MM:SS (secs)]: 0:01:52 (112)
+SBY 19:28:50 [formal/formal_noc_router] summary: Elapsed process time [H:MM:SS (secs)]: 0:01:51 (111)
+SBY 19:28:50 [formal/formal_noc_router] summary: engine_0 (smtbmc z3) returned pass
+SBY 19:28:50 [formal/formal_noc_router] summary: engine_0 did not produce any traces
+SBY 19:28:50 [formal/formal_noc_router] DONE (PASS, rc=0)
